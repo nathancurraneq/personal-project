@@ -1,11 +1,12 @@
 import csv
 import numpy as np
 from sklearn.linear_model import LinearRegression
+import re
 import matplotlib.pyplot as plt
 
 
 def get_past_seqs():
-    f = open('csvFile.csv', 'r')
+    f = open('numbers7.csv', 'r')
     file_read = csv.reader(f)
     array = list(file_read)
     num_array = [list(map(int, i)) for i in array]
@@ -20,7 +21,7 @@ x=[]
 for i in range(0, len(past_num_seqs)):
     x.append([i])
 
-to_predict_x = [50, 51]
+to_predict_x = [len(past_num_seqs)+1]
 to_predict_x = np.array(to_predict_x).reshape(-1, 1)
 print(to_predict_x)
 
