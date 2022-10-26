@@ -3,8 +3,9 @@
 import torch
 from torch import nn, optim
 import torch.nn.functional as F
+from numSeqPredictor import get_past_seqs
 
-vocab_size = 24
+vocab_size = 60
 embedding_size = 32
 
 """
@@ -20,11 +21,15 @@ embedding = nn.Embedding(vocab_size, embedding_size)
 rnn = nn.LSTM(embedding_size, embedding_size, batch_first=True)
 e2v = nn.Linear(embedding_size, vocab_size)
 
-integer_sequence = [23, 15, 3, 11, 12, 19, 14]
+# integer_sequence = get_past_seqs()
+# inputs = integer_sequence[: -1]
+# gold_outputs = integer_sequence[1:]
+
+integer_sequence = [[3, 22, 27, 29, 34, 41, 31], [19, 32, 33, 36, 40, 45, 28], [10, 12, 22, 34, 46, 48, 3]]
 inputs = integer_sequence[: -1]
 gold_outputs = integer_sequence[1:]
 
-batch_size = 1
+batch_size = 7
 seq_len = len(gold_outputs)
 
 print('inputs', inputs)
@@ -34,8 +39,10 @@ inputs_t = torch.tensor([inputs])
 opt = optim.Adam(lr=0.02, params=list(
     embedding.parameters()) + list(rnn.parameters()) + list(e2v.parameters()))
 
-for epoch in range(10):
-    x = embedding(inputs_t)
+i = 0
+for epoch in range(1000):
+    i += 1
+    x = embedding(inputs_t.squeeze())
     emb_out, (h, c) = rnn(x)
     outputs = e2v(emb_out)
 
@@ -44,10 +51,16 @@ for epoch in range(10):
         batch_size * seq_len
     )
     loss = F.cross_entropy(outputs_flat, gold_outputs_flat)
-    print('loss %.4f' % loss)
+    if i % 100 == 0:
+        print("i=", i)
+        print('loss %.4f' % loss)
     opt.zero_grad()
     loss.backward()
     opt.step()
 
     _, preds = outputs.max(dim=-1)
-    print('preds', preds)
+    if i % 100 == 0:
+        print('preds', preds)
+
+    if i == 1000:
+        print("final output:", preds[-1:])
