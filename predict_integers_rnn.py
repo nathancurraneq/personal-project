@@ -21,11 +21,7 @@ embedding = nn.Embedding(vocab_size, embedding_size)
 rnn = nn.LSTM(embedding_size, embedding_size, batch_first=True)
 e2v = nn.Linear(embedding_size, vocab_size)
 
-# integer_sequence = get_past_seqs()
-# inputs = integer_sequence[: -1]
-# gold_outputs = integer_sequence[1:]
-
-integer_sequence = [[3, 22, 27, 29, 34, 41, 31], [19, 32, 33, 36, 40, 45, 28], [10, 12, 22, 34, 46, 48, 3]]
+integer_sequence = get_past_seqs()
 inputs = integer_sequence[: -1]
 gold_outputs = integer_sequence[1:]
 
@@ -36,11 +32,11 @@ print('inputs', inputs)
 print('gold_outputs', gold_outputs)
 
 inputs_t = torch.tensor([inputs])
-opt = optim.Adam(lr=0.02, params=list(
+opt = optim.Adam(lr=0.005, params=list(
     embedding.parameters()) + list(rnn.parameters()) + list(e2v.parameters()))
 
 i = 0
-for epoch in range(1000):
+for epoch in range(10000):
     i += 1
     x = embedding(inputs_t.squeeze())
     emb_out, (h, c) = rnn(x)
@@ -51,7 +47,7 @@ for epoch in range(1000):
         batch_size * seq_len
     )
     loss = F.cross_entropy(outputs_flat, gold_outputs_flat)
-    if i % 100 == 0:
+    if i % 1000 == 0:
         print("i=", i)
         print('loss %.4f' % loss)
     opt.zero_grad()
@@ -59,8 +55,11 @@ for epoch in range(1000):
     opt.step()
 
     _, preds = outputs.max(dim=-1)
-    if i % 100 == 0:
-        print('preds', preds)
+    if i % 1000 == 0:
+        print('expected output:', gold_outputs[-1:])
+        print('preds', preds[-1:])
 
-    if i == 1000:
+    if i == 10000:
+        print('final loss %.4f' % loss)
+        print('expected output:', gold_outputs[-1:])
         print("final output:", preds[-1:])
