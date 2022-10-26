@@ -5,8 +5,8 @@ import re
 import matplotlib.pyplot as plt
 
 
-def get_past_seqs():
-    f = open('files/numbers72022.csv', 'r')
+def get_past_seqs(file):
+    f = open(file, 'r')
     file_read = csv.reader(f)
     array = list(file_read)
     num_array = [list(map(int, i)) for i in array]
@@ -14,7 +14,7 @@ def get_past_seqs():
     return num_array
 
 
-past_num_seqs = get_past_seqs()
+past_num_seqs = get_past_seqs('files/numbers6.csv')
 print(past_num_seqs)
 
 x=[]

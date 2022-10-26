@@ -21,7 +21,7 @@ embedding = nn.Embedding(vocab_size, embedding_size)
 rnn = nn.LSTM(embedding_size, embedding_size, batch_first=True)
 e2v = nn.Linear(embedding_size, vocab_size)
 
-integer_sequence = get_past_seqs()
+integer_sequence = get_past_seqs('files/numbers72022.csv')
 inputs = integer_sequence[: -1]
 gold_outputs = integer_sequence[1:]
 
