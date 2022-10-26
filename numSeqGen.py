@@ -3,7 +3,7 @@ import csv
 array = [142, 22, 31, 4, 15, 66, 97]
 
 # open the file in the write mode
-f = open('csvFile.csv', 'w')
+f = open('files/csvFile.csv', 'w')
 
 # create the csv writer
 writer = csv.writer(f)
