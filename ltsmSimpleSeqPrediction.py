@@ -8,7 +8,7 @@ from numSeqPredictor import get_each_num
 final_predicted_nums = []
 for number in range(0,7):
     # data = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200]
-    data = get_each_num()[i]
+    data = get_each_num()[number]
     # print(data)
 
 
@@ -67,7 +67,7 @@ for number in range(0,7):
                   loss=tf.keras.losses.MeanSquaredError(),
                   metrics=['accuracy'])
 
-    model.fit(X, y, epochs=1000, verbose=1)
+    model.fit(X, y, epochs=10000, verbose=1)
 
     test_data = np.array(data[-5:])
     test_data = test_data.reshape((1, n_steps, n_features))
